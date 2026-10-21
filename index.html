@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="data:," />
+<title>JobSweep — Automate Your Job Applications (The Playbook)</title>
+<meta name="description" content="JobSweep is the private strategy for automating your job hunt: fresh postings caught in their first hours, a resume tailored to every job description, applications filed properly — with honesty rules built in. It teaches automation — it does not guarantee a job offer." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    color-scheme: dark;
+    --ink:#EEF1EA;
+    --dim:#A7B0A4;
+    --faint:#77816F;
+    --bg:#070B08;
+    --panel:#0C120D;
+    --panel2:#10170F;
+    --line:#26301F;
+    --line-soft:#1A2216;
+    --lime:#B7F34C;
+    --lime-ink:#121A05;
+    --lime-dim:#8CC63A;
+    --amber:#FFB454;
+    --red:#FF7A6B;
+    --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
+    --display:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--lime); color:var(--lime-ink)}
+  a{color:inherit}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 clamp(18px, 4.5vw, 48px)}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .topbar-in{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-top:13px; padding-bottom:13px}
+  .wordmark{
+    font-family:var(--display);
+    font-stretch:118%;
+    font-weight:800;
+    letter-spacing:.01em;
+    font-size:22px;
+    text-decoration:none;
+  }
+  .wordmark em{font-style:normal; color:var(--lime)}
+  .topbar nav{display:flex; gap:26px; font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase}
+  .topbar nav a{color:var(--dim); text-decoration:none}
+  .topbar nav a:hover{color:var(--lime)}
+  @media (max-width:640px){ .topbar nav{display:none} }
+  .btn{
+    display:inline-flex; align-items:center; gap:9px;
+    background:var(--lime); color:var(--lime-ink);
+    font-family:var(--display); font-weight:800; font-stretch:110%;
+    font-size:15px; letter-spacing:.02em;
+    padding:12px 22px; border-radius:3px;
+    text-decoration:none; border:1px solid var(--lime);
+    transition:transform .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{background:#C9FF66; transform:translateY(-1px)}
+  .btn.small{padding:8px 16px; font-size:13.5px}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--lime); color:var(--lime); background:transparent}
+
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(46px,7vw,84px) 0 clamp(40px,6vw,64px); border-bottom:1px solid var(--line-soft); position:relative; overflow:hidden}
+  .hero::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(560px 340px at 88% -6%, rgba(183,243,76,.10), transparent 65%),
+      radial-gradient(420px 300px at -8% 110%, rgba(183,243,76,.05), transparent 60%);
+  }
+  .hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(28px,5vw,64px); align-items:center; position:relative}
+  @media (max-width:880px){ .hero-grid{grid-template-columns:1fr} }
+  .hero-tag{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--lime); display:flex; align-items:center; gap:10px; margin:0 0 22px;
+  }
+  .hero-tag::before{content:""; width:26px; height:1px; background:var(--lime)}
+  h1{
+    font-family:var(--display); font-stretch:120%; font-weight:850;
+    font-size:clamp(40px, 6.2vw, 68px); line-height:1.02; letter-spacing:-.01em;
+    margin:0 0 22px; text-wrap:balance;
+  }
+  h1 .hl{color:var(--lime)}
+  .hero-sub{font-size:clamp(17px,2vw,19.5px); color:var(--dim); max-width:34em; margin:0 0 30px}
+  .hero-sub strong{color:var(--ink); font-weight:600}
+  .hero-cta{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-bottom:18px}
+  .price-note{font-family:var(--mono); font-size:13px; color:var(--faint)}
+  .price-note b{color:var(--ink); font-weight:600}
+  .honest-line{
+    display:flex; gap:10px; align-items:flex-start;
+    border:1px dashed #3A452C; border-radius:4px; padding:12px 15px;
+    font-size:14.5px; color:var(--dim); max-width:36em; margin-top:26px;
+    background:rgba(183,243,76,.03);
+  }
+  .honest-line svg{flex:0 0 auto; margin-top:2px}
+  .honest-line b{color:var(--ink)}
+  .urgency{
+    display:flex; gap:10px; align-items:flex-start;
+    border:1px solid #4A3A1E; border-radius:4px; padding:12px 15px;
+    font-size:14.5px; color:var(--dim); max-width:36em; margin-top:14px;
+    background:rgba(255,180,84,.05);
+  }
+  .urgency svg{flex:0 0 auto; margin-top:2px}
+  .urgency b{color:var(--amber)}
+
+  /* cover mock */
+  .cover-stage{display:flex; justify-content:center; perspective:1100px}
+  .cover{
+    width:min(330px, 82vw); aspect-ratio: 3/4.1;
+    background:linear-gradient(155deg, #131B0E 0%, #0A0F07 55%, #060906 100%);
+    border:1px solid #39462B; border-radius:5px;
+    box-shadow: -18px 26px 60px rgba(0,0,0,.55), inset 0 0 0 1px rgba(183,243,76,.06);
+    transform:rotateY(-14deg) rotateX(3deg);
+    padding:30px 28px; display:flex; flex-direction:column;
+    position:relative;
+  }
+  .cover::after{content:""; position:absolute; left:0; top:0; bottom:0; width:7px; background:linear-gradient(180deg, var(--lime), #5C7A22); border-radius:5px 0 0 5px}
+  .cover .c-kicker{font-family:var(--mono); font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--lime); margin-bottom:14px}
+  .cover .c-title{font-family:var(--display); font-stretch:122%; font-weight:900; font-size:47px; line-height:.98; letter-spacing:-.01em}
+  .cover .c-sub{margin-top:16px; font-size:15.5px; color:var(--dim); line-height:1.45}
+  .cover .c-rule{width:44px; height:3px; background:var(--lime); margin:22px 0}
+  .cover .c-list{font-family:var(--mono); font-size:11.5px; color:var(--dim); line-height:2; letter-spacing:.04em}
+  .cover .c-foot{margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+  .cover .c-foot .big{font-size:15px; color:var(--ink); letter-spacing:.06em}
+
+  /* ---------- ticker ---------- */
+  .ticker{border-bottom:1px solid var(--line-soft); overflow:hidden; padding:14px 0; background:var(--panel)}
+  .ticker-track{display:flex; gap:0; width:max-content; animation:tick 46s linear infinite}
+  .ticker:hover .ticker-track{animation-play-state:paused}
+  .ticker span{font-family:var(--mono); font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); padding:0 26px; white-space:nowrap}
+  .ticker span i{font-style:normal; color:var(--lime); padding-right:26px}
+  @keyframes tick{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none; flex-wrap:wrap; width:auto}
+    html{scroll-behavior:auto}
+    .btn:hover{transform:none}
+  }
+
+  /* features */
+  .feat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(14px,2.4vw,22px)}
+  @media (max-width:900px){ .feat-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .feat-grid{grid-template-columns:1fr} }
+  .feat{border:1px solid var(--line); border-radius:6px; padding:22px; background:var(--panel)}
+  .feat h3{font-family:var(--display); font-stretch:110%; font-weight:760; font-size:17.5px; margin:0 0 6px; display:flex; gap:10px; align-items:flex-start}
+  .feat h3 svg{flex:0 0 auto; margin-top:3px}
+  .feat p{margin:0; color:var(--dim); font-size:14.5px}
+  .feat p b{color:var(--ink); font-weight:600}
+  .feat.all-in{
+    grid-column:1/-1; border-color:#42532C;
+    background:linear-gradient(180deg, rgba(183,243,76,.07), var(--panel) 60%);
+    display:flex; flex-wrap:wrap; gap:8px 26px; align-items:baseline;
+  }
+  .feat.all-in h3{margin:0}
+  .feat.all-in p{flex:1 1 320px}
+
+  /* ---------- sections ---------- */
+  section{padding:clamp(52px,7vw,84px) 0}
+  .sec-head{max-width:46em; margin-bottom:clamp(30px,4vw,46px)}
+  .kicker{font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--lime-dim); margin:0 0 14px}
+  h2{font-family:var(--display); font-stretch:116%; font-weight:820; font-size:clamp(28px,4vw,42px); line-height:1.1; letter-spacing:-.005em; margin:0 0 14px; text-wrap:balance}
+  .sec-head p{color:var(--dim); margin:0; font-size:17.5px}
+
+  /* problem */
+  .problem-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,52px); align-items:start}
+  @media (max-width:820px){ .problem-grid{grid-template-columns:1fr} }
+  .problem-grid p{color:var(--dim); margin:0 0 16px}
+  .problem-grid p strong{color:var(--ink)}
+  .stat-stack{display:grid; gap:0; border:1px solid var(--line); border-radius:5px; overflow:hidden}
+  .stat{display:flex; gap:18px; align-items:baseline; padding:20px 22px; background:var(--panel); border-bottom:1px solid var(--line-soft)}
+  .stat:last-child{border-bottom:none}
+  .stat .n{font-family:var(--display); font-stretch:118%; font-weight:850; font-size:32px; color:var(--lime); min-width:118px}
+  .stat .d{color:var(--dim); font-size:15px}
+  .stat .d b{color:var(--ink); font-weight:600}
+
+  /* steps */
+  .steps{border-top:1px solid var(--line)}
+  .step{display:grid; grid-template-columns:86px 1fr 1fr; gap:clamp(16px,3vw,40px); padding:30px 0; border-bottom:1px solid var(--line)}
+  @media (max-width:820px){ .step{grid-template-columns:56px 1fr} .step .prompt-card{grid-column:2} }
+  .step .num{font-family:var(--display); font-stretch:120%; font-weight:900; font-size:40px; color:transparent; -webkit-text-stroke:1.5px var(--lime-dim); line-height:1}
+  .step h3{font-family:var(--display); font-stretch:112%; font-weight:780; font-size:21px; margin:2px 0 8px}
+  .step p{color:var(--dim); margin:0; font-size:15.5px}
+  .step p b{color:var(--ink); font-weight:600}
+  .prompt-card{
+    background:var(--panel2); border:1px solid var(--line); border-radius:5px;
+    padding:16px 18px; font-family:var(--mono); font-size:13px; line-height:1.65; color:#C9D4BD;
+    align-self:start;
+  }
+  .prompt-card .pc-head{display:flex; justify-content:space-between; gap:10px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--lime); border-bottom:1px solid var(--line-soft); padding-bottom:9px; margin-bottom:11px}
+  .prompt-card .pc-head span:last-child{color:var(--faint)}
+
+  /* inside the playbook */
+  .inside{background:var(--panel); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft)}
+  .toc{display:grid; grid-template-columns:repeat(2,1fr); gap:0 clamp(24px,4vw,56px)}
+  @media (max-width:760px){ .toc{grid-template-columns:1fr} }
+  .toc-item{display:flex; gap:16px; padding:17px 0; border-bottom:1px solid var(--line-soft); align-items:baseline}
+  .toc-item .pg{font-family:var(--mono); font-size:12px; color:var(--lime); min-width:52px}
+  .toc-item h4{margin:0 0 3px; font-size:16.5px; font-weight:650; font-family:var(--display); font-stretch:108%}
+  .toc-item p{margin:0; color:var(--dim); font-size:14.5px}
+
+  /* paths */
+  .paths{display:grid; grid-template-columns:1fr 1fr; gap:clamp(18px,3vw,28px)}
+  @media (max-width:820px){ .paths{grid-template-columns:1fr} }
+  .path{border:1px solid var(--line); border-radius:6px; padding:28px; background:var(--panel)}
+  .path .p-tag{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--bg); background:var(--lime); display:inline-block; padding:4px 10px; border-radius:3px; font-weight:600; margin-bottom:16px}
+  .path.b .p-tag{background:var(--amber)}
+  .path h3{font-family:var(--display); font-stretch:112%; font-weight:800; font-size:22px; margin:0 0 10px}
+  .path ol{margin:0; padding-left:20px; color:var(--dim); font-size:15.5px}
+  .path ol li{margin-bottom:8px}
+  .path ol li b{color:var(--ink)}
+  .path code{font-family:var(--mono); font-size:13px; background:#182114; padding:1px 6px; border-radius:3px; color:var(--lime)}
+  .paths-note{margin-top:18px; font-size:14.5px; color:var(--faint); font-family:var(--mono)}
+
+  /* rules / comparison */
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:clamp(18px,3vw,28px); align-items:stretch}
+  @media (max-width:820px){ .vs{grid-template-columns:1fr} }
+  .vs-col{border:1px solid var(--line); border-radius:6px; padding:28px; background:var(--panel)}
+  .vs-col.good{border-color:#42532C; background:linear-gradient(180deg, rgba(183,243,76,.05), var(--panel) 42%)}
+  .vs-col h3{font-family:var(--display); font-stretch:112%; font-weight:800; font-size:20px; margin:0 0 4px}
+  .vs-col .vs-sub{font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin:0 0 20px}
+  .vs-col.good .vs-sub{color:var(--lime-dim)}
+  .vs-list{list-style:none; margin:0; padding:0; display:grid; gap:14px}
+  .vs-list li{display:flex; gap:11px; font-size:15.5px; color:var(--dim); align-items:flex-start}
+  .vs-list li b{color:var(--ink); font-weight:600}
+  .vs-list svg{flex:0 0 auto; margin-top:4px}
+
+  /* promises */
+  .promise-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(18px,3vw,28px)}
+  @media (max-width:820px){ .promise-grid{grid-template-columns:1fr} }
+  .promise{border-radius:6px; padding:30px}
+  .promise.yes{background:var(--lime); color:var(--lime-ink)}
+  .promise.no{background:transparent; border:1px dashed #46523A; color:var(--dim)}
+  .promise h3{font-family:var(--display); font-stretch:114%; font-weight:850; font-size:24px; margin:0 0 18px}
+  .promise ul{list-style:none; margin:0; padding:0; display:grid; gap:13px; font-size:16px}
+  .promise ul li{display:flex; gap:11px; align-items:flex-start}
+  .promise ul li svg{flex:0 0 auto; margin-top:4px}
+  .promise.no h3{color:var(--ink)}
+  .promise.no li b{color:var(--ink)}
+
+  /* price */
+  .price-sec{background:var(--panel); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft)}
+  .price-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,52px); align-items:center}
+  @media (max-width:820px){ .price-grid{grid-template-columns:1fr} }
+  .price-card{border:1px solid #42532C; background:var(--bg); border-radius:6px; padding:32px}
+  .price-card .amount{font-family:var(--display); font-stretch:122%; font-weight:900; font-size:58px; line-height:1; margin:6px 0 4px}
+  .price-card .amount small{font-size:19px; font-weight:600; color:var(--dim); font-stretch:100%}
+  .price-card .region{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--lime)}
+  .price-card ul{list-style:none; margin:22px 0 26px; padding:0; display:grid; gap:11px; font-size:15.5px; color:var(--dim)}
+  .price-card ul li{display:flex; gap:10px; align-items:flex-start}
+  .price-card ul li svg{flex:0 0 auto; margin-top:4px}
+  .price-card .btn{width:100%; justify-content:center}
+  .price-card .fine{font-family:var(--mono); font-size:12px; color:var(--faint); text-align:center; margin-top:13px}
+  .region-toggle{display:inline-flex; border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-bottom:20px}
+  .region-toggle button{
+    appearance:none; border:0; background:transparent; color:var(--dim); cursor:pointer;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.08em; padding:9px 16px;
+  }
+  .region-toggle button[aria-pressed="true"]{background:var(--lime); color:var(--lime-ink); font-weight:600}
+  .value-list{display:grid; gap:20px}
+  .value-list .v{display:flex; gap:15px}
+  .value-list .v svg{flex:0 0 auto; margin-top:3px}
+  .value-list h4{margin:0 0 3px; font-size:17px; font-family:var(--display); font-stretch:110%; font-weight:750}
+  .value-list p{margin:0; color:var(--dim); font-size:15.5px}
+
+  /* faq */
+  .faq{max-width:820px}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{
+    cursor:pointer; list-style:none; padding:21px 34px 21px 0; position:relative;
+    font-family:var(--display); font-stretch:110%; font-weight:720; font-size:18.5px;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{
+    content:"+"; position:absolute; right:2px; top:16px;
+    font-family:var(--mono); font-size:24px; color:var(--lime); font-weight:400;
+    transition:transform .2s ease;
+  }
+  .faq details[open ] summary::after{transform:rotate(45deg)}
+  .faq details p{margin:0 0 22px; color:var(--dim); max-width:44em}
+  .faq details p b{color:var(--ink)}
+
+  /* final cta */
+  .final{border-top:1px solid var(--line-soft); text-align:left; position:relative; overflow:hidden}
+  .final::before{content:""; position:absolute; inset:0; background:radial-gradient(600px 320px at 50% 130%, rgba(183,243,76,.12), transparent 65%); pointer-events:none}
+  .final h2{font-size:clamp(32px,5vw,52px); max-width:16em}
+  .final p{color:var(--dim); max-width:38em; margin:0 0 28px; font-size:17.5px}
+  .final .row{display:flex; flex-wrap:wrap; gap:16px; align-items:center; position:relative}
+
+  footer{border-top:1px solid var(--line-soft); padding:34px 0 46px}
+  .foot{display:flex; flex-wrap:wrap; gap:14px 34px; justify-content:space-between; align-items:flex-start}
+  .foot .f-brand{font-family:var(--display); font-stretch:118%; font-weight:800; font-size:19px}
+  .foot .f-brand em{font-style:normal; color:var(--lime)}
+  .foot p{font-family:var(--mono); font-size:12px; color:var(--faint); margin:6px 0 0; max-width:52em; line-height:1.7}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="wordmark" href="#top">Job<em>Sweep</em></a>
+    <nav aria-label="Page sections">
+      <a href="#features">What you get</a>
+      <a href="#honest">The honest bit</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn small buy-link" href="https://topmate.io/manish_p_kharatamal/2367906" target="_blank" rel="noopener">Get JobSweep</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="hero-tag">The job-application automation playbook</p>
+        <h1>Your job hunt,<br />running <span class="hl">every hour</span> — while you live your life.</h1>
+        <p class="hero-sub">JobSweep is a complete strategy for automating your entire application grind — the one almost nobody is using yet. Fresh postings caught in their first hours. A resume tailored to every job description. Applications filed properly, on official company pages. And rules that keep every word of it honest. <strong>The grind runs itself; you keep the decisions.</strong></p>
+        <div class="hero-cta">
+          <a class="btn buy-link" href="https://topmate.io/manish_p_kharatamal/2367906" target="_blank" rel="noopener">Get JobSweep on Topmate
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="btn ghost" href="#features">See what you get</a>
+        </div>
+        <p class="price-note">One payment — everything included &nbsp;·&nbsp; delivered instantly &nbsp;·&nbsp; available on Topmate</p>
+        <div class="urgency">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#FFB454" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#FFB454" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><b>The faster you buy this, the lower the competition for you.</b> This works because almost nobody knows it yet — every job seeker who picks it up after you is one more person running the same system in your field. The edge is biggest for the people who start first.</span>
+        </div>
+        <div class="honest-line">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v5m0 3.5v.5M10.3 3.8 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z" stroke="#FFB454" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><b>The promise, up front:</b> this teaches you to automate job applications. It does <b>not</b> guarantee a job offer — anyone who promises you that is lying. What it guarantees is a better process: more of the right applications, filed early, with none of your time wasted on forms.</span>
+        </div>
+      </div>
+      <div class="cover-stage" aria-hidden="true">
+        <div class="cover">
+          <div class="c-kicker">The Strategy Nobody Teaches</div>
+          <div class="c-title">JOB<br />SWEEP</div>
+          <p class="c-sub">Automate the searching, the tailoring and the applying — keep the decisions.</p>
+          <div class="c-rule"></div>
+          <div class="c-list">
+            A STRATEGY NOBODY TEACHES<br />
+            RUNS WHILE YOU SLEEP<br />
+            TAILORED — NEVER GENERIC<br />
+            HONEST BY DESIGN
+          </div>
+          <div class="c-foot">
+            <span>One-time · Yours forever</span>
+            <span class="big">JobSweep</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TICKER ================= -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack">
+      <span><i>◆</i>Hourly sweep, fresh postings only</span>
+      <span><i>◆</i>Resume tailored to every JD</span>
+      <span><i>◆</i>No invented skills — ever</span>
+      <span><i>◆</i>Official company pages only</span>
+      <span><i>◆</i>The decisions stay yours</span>
+      <span><i>◆</i>Filed early, filed properly</span>
+      <span><i>◆</i>No job-offer guarantee — and we say so</span>
+    </div>
+  </div>
+
+  <!-- ================= FEATURES ================= -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">What you get</p>
+        <h2>Everything JobSweep delivers — at a glance.</h2>
+        <p>No teasers, no locked extras, no second product to buy later. This is the full list of what lands in your hands the moment you check out.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>An hourly sweep</h3>
+          <p>Fresh postings caught <b>in their first hours</b> — your applications land in the first batch, never in yesterday's pile.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>A resume tailored to every job</h3>
+          <p>A fresh copy of your resume <b>shaped to each job description</b> — never one generic file blasted at everything.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Applications filed properly</h3>
+          <p>Submitted the way a careful human would — on <b>official company pages only</b>, never inside aggregators.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Screening answers handled</h3>
+          <p>Every form answered from <b>details you approved in advance</b> — nothing invented to please a question.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>A skills checkpoint</h3>
+          <p>Anything new proposed for your resume <b>waits for your yes</b> before it goes out in your name.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Every application tracked</h3>
+          <p>One clear log: <b>what's live, what's held for your call, what's done</b> — no duplicates, no lost threads.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Works from any country</h3>
+          <p>Including a working route for <b>regions the tool hasn't officially reached</b> — and the simpler route where it has.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>The exact instructions</h3>
+          <p>The complete setup and the <b>word-for-word instructions</b>, copy-paste ready — the tool behind it revealed inside.</p>
+        </div>
+        <div class="feat">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Troubleshooting, mapped</h3>
+          <p>The <b>real dead ends and their fixes</b>, documented — so you skip the failures instead of repeating them.</p>
+        </div>
+        <div class="feat all-in">
+          <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>One payment — everything in</h3>
+          <p>The whole system, complete, for a single payment. <b>No upsells inside, no tiers, no add-ons, no subscription</b> — nothing is held back to sell you later.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROBLEM ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">The problem</p>
+        <h2>Applying to jobs is a second job — and the slow applicants lose.</h2>
+      </div>
+      <div class="problem-grid">
+        <div>
+          <p>Every application is the same hour of work: find the posting, re-read the JD, tweak the resume, retype your details into yet another portal, answer the same screening questions, log it somewhere. Multiply by thirty roles and the hunt eats the time you should spend <strong>preparing for interviews and building skills</strong>.</p>
+          <p>Worse, timing is everything. Postings collect hundreds of applications in their first days; by the time a role reaches your weekend shortlist, the first batch is already being screened. The candidates who apply early with a tailored resume win — not the ones who apply most.</p>
+          <p>The existing "solutions" are worse than the problem: auto-apply bots that blast one generic resume at hundreds of jobs, invent experience, and get accounts flagged. Recruiters can smell them. <strong>JobSweep is the opposite approach</strong> — automate the grind, keep the judgement, never fake a line.</p>
+        </div>
+        <div class="stat-stack">
+          <div class="stat"><span class="n">~1 hr</span><span class="d">spent on <b>one manual application</b> — search, tailor, type, track</span></div>
+          <div class="stat"><span class="n">24 hrs</span><span class="d">the window where a posting is fresh — <b>JobSweep's sweep runs every hour</b> inside it</span></div>
+          <div class="stat"><span class="n">First batch</span><span class="d">where your applications land — <b>early applicants get read</b>, late ones get skimmed</span></div>
+          <div class="stat"><span class="n">Every JD</span><span class="d">gets <b>its own tailored resume</b> — never one generic file blasted at everything</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VS BOTS ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Why not just use a bot?</p>
+        <h2>Spam tools blast. JobSweep applies properly.</h2>
+        <p>Auto-apply bots already exist — and recruiters already hate them. Here's the difference in approach, because it decides whether automation helps your hunt or quietly poisons it.</p>
+      </div>
+      <div class="vs">
+        <div class="vs-col">
+          <h3>Generic auto-apply bots</h3>
+          <p class="vs-sub">The spray-and-pray model</p>
+          <ul class="vs-list">
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span>One <b>generic resume</b> blasted at hundreds of postings that barely match</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span>Answers <b>invented to please the form</b> — including experience you don't have</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span>Applies <b>inside aggregators</b>, duplicates applications, risks account flags</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span>Sells you a <b>subscription</b> and a placement promise it can't keep</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span>You can't see — or veto — <b>what it claims about you</b></span></li>
+          </ul>
+        </div>
+        <div class="vs-col good">
+          <h3>JobSweep</h3>
+          <p class="vs-sub">The tailored, supervised model</p>
+          <ul class="vs-list">
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>A <b>fresh tailored copy</b> of your resume for every single JD</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Answers come from <b>what you approved in advance</b> — if a form has no truthful option, it isn't submitted</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Applications only on <b>official company pages</b>; LinkedIn &amp; Indeed are discovery only</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>One payment</b>, and the promise is a process — stated plainly, in writing, on page one</span></li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="#B7F34C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>You approve added skills</b> before anything is submitted in your name</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROMISES ================= -->
+  <section id="honest" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">The honest bit</p>
+        <h2>What JobSweep promises — and what it refuses to.</h2>
+        <p>This section is the product. Every competitor in this space leads with a guarantee they can't honour; JobSweep leads with the truth, because a system built on honest applications should be sold the same way.</p>
+      </div>
+      <div class="promise-grid">
+        <div class="promise yes">
+          <h3>What you get — promised</h3>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>The <b>complete strategy</b> — the whole system, nothing held back</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>One payment, everything included</b> — no upsells, tiers or add-ons waiting inside</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>The <b>exact instructions</b>, word for word — copy-paste ready, no guesswork</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>A route in <b>wherever you live</b> — including regions the tool hasn't officially reached</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>The <b>honesty rules</b> that keep automation from becoming misrepresentation</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Troubleshooting from real failures</b> — so you skip the dead ends already mapped</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>A <b>7-day refund</b> if you read it and decide it isn't useful — just say so</span></li>
+          </ul>
+        </div>
+        <div class="promise no">
+          <h3>What nobody can promise you</h3>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span><b>Not a job offer.</b> Hiring depends on your skills, the market, and the interview. This system gets your applications in — early, tailored, tracked. The rest is yours.</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span><b>Not insider access.</b> No recruiter connections, no referral backdoors, no loopholes that get accounts flagged — just a better process, run relentlessly, every single day.</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#FF7A6B" stroke-width="2.2" stroke-linecap="round"/></svg><span><b>Not zero effort.</b> Setup takes an evening, captchas and borderline calls stay yours, and the weekly review takes 15 minutes. That's the deal: the grind goes, the judgement stays.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Questions, answered straight</p>
+        <h2>Before you ask — the book answers these too.</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Will this get me a job?</summary>
+          <p>No — and that's printed on page one, not buried in fine print. JobSweep automates the <b>process</b>: finding fresh postings, tailoring your resume to each one, filing applications properly, tracking everything. Whether you get hired depends on your skills, your experience and your interviews. What changes is how much of your week the grind consumes, and how early your applications land.</p>
+        </details>
+        <details>
+          <summary>Isn't letting an AI apply for you risky?</summary>
+          <p>It is if it's unsupervised — that's exactly what the honesty rules are for. Nothing is invented about you, nothing questionable goes out without your say, and the borderline calls stay yours to make. The system does the grind; you keep the veto.</p>
+        </details>
+        <details>
+          <summary>The tool behind this isn't available in my country. Can I still use this?</summary>
+          <p>Yes. The strategy was built from India — a country the tool hadn't officially reached — and it includes a working route for exactly that situation. If you live somewhere it is available, your route is simpler still. Either way, the setup is covered in full inside.</p>
+        </details>
+        <details>
+          <summary>What exactly am I buying?</summary>
+          <p>The complete JobSweep strategy: the tool behind it, the full setup, the exact word-for-word instructions, the honesty rules, and the troubleshooting — delivered instantly through <b>Topmate</b> the moment you check out. This page sells the outcome on purpose; the method is the product, and it unlocks inside.</p>
+        </details>
+        <details>
+          <summary>I'm not a data analyst. Does this still work?</summary>
+          <p>Yes. The worked examples come from a data analyst's hunt because that's the author's, but nothing in the system is field-specific: the same strategy works for <b>any role</b> — fresher to experienced. You set it up around your own field, your own details, inside.</p>
+        </details>
+        <details>
+          <summary>What does running it cost, after the playbook?</summary>
+          <p>JobSweep itself is one payment — there's no JobSweep subscription, no per-application fee, and no upsells inside: no tiers, no add-ons, nothing held back to sell you later. Everything listed at the top of this page is in the one payment. The tool it runs on is covered in full inside, including how to get started with it.</p>
+        </details>
+        <details>
+          <summary>How do I get the playbook after paying?</summary>
+          <p>Checkout and delivery run through <b>Topmate</b>: pay with UPI, card or net-banking, and JobSweep is delivered to you instantly. If it isn't useful, the <b>7-day refund</b> applies — ask, and it's returned.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section class="final">
+    <div class="wrap">
+      <p class="kicker">Start tonight</p>
+      <h2>The next posting in your field goes up within the hour. Be in its first batch.</h2>
+      <p>Set the system up this evening — resume, answers, scope, sweep — and tomorrow morning the hunt reports to you, instead of the other way around. Automate the grind. Keep the honesty.</p>
+      <div class="row">
+        <a class="btn buy-link" href="https://topmate.io/manish_p_kharatamal/2367906" target="_blank" rel="noopener">Get JobSweep on Topmate</a>
+        <span class="price-note">Instant delivery · 7-day refund · No job-offer guarantee, in writing</span>
+      </div>
+      <div class="urgency" style="position:relative; margin-top:22px">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#FFB454" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#FFB454" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>The faster you buy this, the lower the competition for you</b> — the edge lasts only while almost nobody knows it. Start before your field catches on.</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="f-brand">Job<em>Sweep</em></div>
+      <p>The job-application automation playbook · Sold and delivered via Topmate.</p>
+    </div>
+    <p style="max-width:34em">JobSweep teaches a job-application automation system. It does not guarantee interviews, offers, or employment outcomes, and it never will — that's the whole point of the brand. JobSweep is an independent guide; the tool it is built on is named only inside the playbook.</p>
+  </div>
+</footer>
+
+<script>
+  /* ============================================================
+     CHECKOUT LINK — live Topmate product URL.
+     Every "buy" button on the page reads this one constant.
+     ============================================================ */
+  var TOPMATE_URL = "https://topmate.io/manish_p_kharatamal/2367906";
+  document.querySelectorAll(".buy-link").forEach(function (a) {
+    a.setAttribute("href", TOPMATE_URL);
+  });
+
+  /* Duplicate the ticker content once so the loop is seamless */
+  var track = document.getElementById("tickerTrack");
+  track.innerHTML += track.innerHTML;
+</script>
+</body>
+</html>
