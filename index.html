@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="dark" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="data:," />
 <title>JobSweep — Automate Your Job Applications (The Playbook)</title>
 <meta name="description" content="JobSweep is the private strategy for automating your job hunt: fresh postings caught in their first hours, a resume tailored to every job description, applications filed properly — with honesty rules built in. It teaches automation — it does not guarantee a job offer." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -153,6 +153,8 @@
   @keyframes tick{from{transform:translateX(0)} to{transform:translateX(-50%)}}
   @media (prefers-reduced-motion: reduce){
     .ticker-track{animation:none; flex-wrap:wrap; width:auto}
+    .ticker span{white-space:normal}
+    .tick-dup{display:none}
     html{scroll-behavior:auto}
     .btn:hover{transform:none}
   }
@@ -609,9 +611,16 @@
     a.setAttribute("href", TOPMATE_URL);
   });
 
-  /* Duplicate the ticker content once so the loop is seamless */
+  /* Duplicate the ticker content once so the loop is seamless.
+     The copies are tagged .tick-dup so the static (reduced-motion)
+     layout can hide them and show each item only once. */
   var track = document.getElementById("tickerTrack");
-  track.innerHTML += track.innerHTML;
+  Array.prototype.slice.call(track.children).forEach(function (node) {
+    var clone = node.cloneNode(true);
+    clone.classList.add("tick-dup");
+    clone.setAttribute("aria-hidden", "true");
+    track.appendChild(clone);
+  });
 </script>
 </body>
 </html>
